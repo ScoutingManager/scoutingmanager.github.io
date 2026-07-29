@@ -1,4 +1,4 @@
-# JRVScoutingManager - servidor estatico local (no requiere Node ni Python)
+# ScoutingManager - servidor estatico local (no requiere Node ni Python)
 # Uso: clic derecho > Ejecutar con PowerShell, o desde una terminal: .\serve.ps1 -Port 5173
 param(
     [int]$Port = 5173
@@ -18,7 +18,7 @@ try {
     exit 1
 }
 
-Write-Host "JRVScoutingManager sirviendo en $prefix (Ctrl+C para detener)" -ForegroundColor Green
+Write-Host "ScoutingManager sirviendo en $prefix (Ctrl+C para detener)" -ForegroundColor Green
 
 $mime = @{
     ".html" = "text/html; charset=utf-8"

@@ -1,4 +1,4 @@
-/* JRVScoutingManager - autenticacion real con Firebase Auth + perfiles/permisos en Firestore.
+/* ScoutingManager - autenticacion real con Firebase Auth + perfiles/permisos en Firestore.
    Se sigue pudiendo iniciar sesion con "usuario" (no email): internamente se traduce a un
    email sintetico unico (usuario@jrvscouting.app) que solo usa Firebase para identificar la cuenta. */
 

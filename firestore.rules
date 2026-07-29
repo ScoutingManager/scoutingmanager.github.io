@@ -1,6 +1,6 @@
 rules_version = '2';
 
-// JRVScoutingManager - reglas de seguridad de Firestore.
+// ScoutingManager - reglas de seguridad de Firestore.
 // Copia y pega este archivo completo en Firebase Console > Firestore Database > Reglas > Publicar.
 
 service cloud.firestore {

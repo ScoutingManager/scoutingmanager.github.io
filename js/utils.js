@@ -1,4 +1,4 @@
-/* JRVScoutingManager - utilidades compartidas */
+/* ScoutingManager - utilidades compartidas */
 
 const Utils = (() => {
   const WEEKDAYS = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];

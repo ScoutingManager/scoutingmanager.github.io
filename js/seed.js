@@ -1,4 +1,4 @@
-/* JRVScoutingManager - datos de ejemplo (seed)
+/* ScoutingManager - datos de ejemplo (seed)
    Los torneos se han extraido del calendario original en Excel del usuario
    ("Copia de Torneos 25_26 Los 3 Tenores.xlsx") y distribuido sobre la temporada 2025/26.
    Los equipos y jugadores son datos ficticios de demostracion. */
@@ -106,7 +106,7 @@ const Seed = (() => {
   const NATIONALITIES = ['España','España','España','España','España','España','Marruecos','Argentina','Colombia','Portugal','Rumanía','Guinea Ecuatorial'];
 
   const CLUBS = [
-    { id: 'club_jrv', name: 'JRV Base', notes: 'Club propio - cantera de referencia.' },
+    { id: 'club_jrv', name: 'Club Base', notes: 'Club propio - cantera de referencia.' },
     { id: 'club_rival_norte', name: 'CD Rival Norte', notes: 'Equipo rival seguido para scouting.' },
     { id: 'club_ciudad_sur', name: 'AD Ciudad Sur', notes: 'Equipo rival seguido para scouting.' }
   ];

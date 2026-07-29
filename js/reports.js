@@ -1,4 +1,4 @@
-/* JRVScoutingManager - Informes: ficha de observacion de partido (scouting report) */
+/* ScoutingManager - Informes: ficha de observacion de partido (scouting report) */
 
 const Reports = (() => {
 

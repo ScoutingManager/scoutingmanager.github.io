@@ -1,4 +1,4 @@
-/* JRVScoutingManager - directorio global de jugadores (buscador transversal a todos los equipos) */
+/* ScoutingManager - directorio global de jugadores (buscador transversal a todos los equipos) */
 
 const Scouting = (() => {
   let searchTerm = '';

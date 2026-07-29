@@ -1,4 +1,4 @@
-/* JRVScoutingManager - UI compartida de jugadores (tarjeta, formulario, ficha con campo de posicion y radar de atributos) */
+/* ScoutingManager - UI compartida de jugadores (tarjeta, formulario, ficha con campo de posicion y radar de atributos) */
 
 const PlayerUI = (() => {
   const POSITIONS = ['Portero', 'Lateral derecho', 'Lateral izquierdo', 'Central derecho', 'Central izquierdo',

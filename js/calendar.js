@@ -1,4 +1,4 @@
-/* JRVScoutingManager - calendario dinamico con torneos multi-dia */
+/* ScoutingManager - calendario dinamico con torneos multi-dia */
 
 const Calendar = (() => {
   let viewYear, viewMonth; // viewMonth: 0-11

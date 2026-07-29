@@ -1,4 +1,4 @@
-/* JRVScoutingManager - capa de datos, respaldada por Firestore (Firebase) en tiempo real.
+/* ScoutingManager - capa de datos, respaldada por Firestore (Firebase) en tiempo real.
    Mantiene la misma interfaz sincrona (.all/.getById/.upsert/.remove/.save) que antes usaba
    localStorage, gracias a una cache local que se mantiene al dia mediante onSnapshot.
    Esto evita tener que reescribir el resto de modulos (calendar.js, teams.js, etc.). */

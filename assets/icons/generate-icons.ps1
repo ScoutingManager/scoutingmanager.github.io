@@ -17,13 +17,13 @@ function New-Icon($size, $path) {
     $inset = [int]($size * 0.05)
     $g.DrawEllipse($borderPen, $inset, $inset, $size - 2*$inset, $size - 2*$inset)
 
-    $fontSize = [int]($size * 0.34)
+    $fontSize = [int]($size * 0.36)
     $font = New-Object System.Drawing.Font("Arial", $fontSize, [System.Drawing.FontStyle]::Bold)
     $goldBrush = New-Object System.Drawing.SolidBrush($gold)
     $sf = New-Object System.Drawing.StringFormat
     $sf.Alignment = [System.Drawing.StringAlignment]::Center
     $sf.LineAlignment = [System.Drawing.StringAlignment]::Center
-    $g.DrawString("JRV", $font, $goldBrush, [System.Drawing.RectangleF]::new(0,0,$size,$size), $sf)
+    $g.DrawString("SM", $font, $goldBrush, [System.Drawing.RectangleF]::new(0,0,$size,$size), $sf)
 
     $bmp.Save($path, [System.Drawing.Imaging.ImageFormat]::Png)
     $g.Dispose()

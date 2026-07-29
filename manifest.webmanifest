@@ -1,6 +1,6 @@
 {
-  "name": "JRVScoutingManager",
-  "short_name": "JRV Scouting",
+  "name": "ScoutingManager",
+  "short_name": "ScoutingManager",
   "description": "Gestión de calendario de torneos y scouting de fútbol base.",
   "start_url": "./index.html",
   "scope": "./",

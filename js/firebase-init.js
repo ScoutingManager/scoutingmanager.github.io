@@ -1,4 +1,4 @@
-/* JRVScoutingManager - inicializacion de Firebase (App/Auth/Firestore) via CDN, sin build.
+/* ScoutingManager - inicializacion de Firebase (App/Auth/Firestore) via CDN, sin build.
    Este script es un modulo ES (se carga con <script type="module">) y expone en window.FB
    las funciones que el resto del codigo (scripts clasicos) necesita, para no tener que
    convertir toda la aplicacion a modulos. */

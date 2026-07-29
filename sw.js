@@ -1,4 +1,4 @@
-/* JRVScoutingManager - service worker basico (cache offline de shell estatico) */
+/* ScoutingManager - service worker basico (cache offline de shell estatico) */
 const CACHE_NAME = 'jrv-scouting-v5';
 const ASSETS = [
   './', './index.html', './manifest.webmanifest',

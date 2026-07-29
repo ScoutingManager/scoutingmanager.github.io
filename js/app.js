@@ -1,4 +1,4 @@
-/* JRVScoutingManager - shell principal de la aplicacion */
+/* ScoutingManager - shell principal de la aplicacion */
 
 const App = (() => {
   let currentView = 'calendar';
@@ -8,8 +8,8 @@ const App = (() => {
     root.innerHTML = `
       <div class="auth-wrap">
         <div class="auth-hero">
-          <div class="auth-hero-logo">JRV</div>
-          <h1>JRVScoutingManager</h1>
+          <div class="auth-hero-logo">SM</div>
+          <h1>ScoutingManager</h1>
           <p>Gestión integral de calendario de torneos y scouting de fútbol base.</p>
         </div>
         <div class="auth-card">

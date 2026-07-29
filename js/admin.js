@@ -1,4 +1,4 @@
-/* JRVScoutingManager - panel de administracion: aprobacion de usuarios y permisos */
+/* ScoutingManager - panel de administracion: aprobacion de usuarios y permisos */
 
 const Admin = (() => {
 

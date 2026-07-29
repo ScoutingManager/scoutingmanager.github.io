@@ -1,4 +1,4 @@
-/* JRVScoutingManager - configuracion de la app */
+/* ScoutingManager - configuracion de la app */
 
 const Settings = (() => {
 
@@ -100,7 +100,7 @@ const Settings = (() => {
 
       <section class="settings-section">
         <h3>Acerca de</h3>
-        <p><strong>JRVScoutingManager</strong> — v0.2.0</p>
+        <p><strong>ScoutingManager</strong> — v0.2.0</p>
         <p class="text-muted-sm">Gestión de calendario de torneos y scouting de fútbol base. Backend en Firebase (Authentication + Firestore en tiempo real), accesible desde cualquier dispositivo.</p>
       </section>
       ` : ''}

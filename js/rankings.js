@@ -1,4 +1,4 @@
-/* JRVScoutingManager - Ranking: Jugador TOP, mejor por pais, mejor por posicion */
+/* ScoutingManager - Ranking: Jugador TOP, mejor por pais, mejor por posicion */
 
 const Rankings = (() => {
   let activeTab = 'top';

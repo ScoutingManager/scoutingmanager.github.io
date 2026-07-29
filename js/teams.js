@@ -1,4 +1,4 @@
-/* JRVScoutingManager - modulo Equipos: club > categoria/año (plantilla) > jugadores */
+/* ScoutingManager - modulo Equipos: club > categoria/año (plantilla) > jugadores */
 
 const Teams = (() => {
   let activeTeam = null;
