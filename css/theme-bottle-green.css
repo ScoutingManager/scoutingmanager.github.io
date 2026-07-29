@@ -1,0 +1,46 @@
+/* Tema: Verde Botella - sobrio, moderno y profesional, con dorado/crema */
+:root[data-theme="bottle-green"] {
+  --color-bg: #f4f1e7;
+  --color-bg-elevated: #0c4232;
+  --color-surface: #ffffff;
+  --color-surface-2: #ece6d3;
+  --color-border: #ddd3b3;
+  --color-text: #1c2420;
+  --color-text-muted: #6b6558;
+  --color-primary: #0c4232;
+  --color-primary-2: #1c6b4f;
+  --color-primary-contrast: #f5f2e9;
+  --color-accent: #c9a227;
+  --color-accent-2: #123f30;
+  --color-danger: #b1493a;
+  --color-success: #2e8b57;
+  --color-warn: #b9791f;
+  --shadow: 0 12px 32px -8px rgba(11,61,46,.22);
+  --shadow-sm: 0 4px 14px -4px rgba(11,61,46,.2);
+  --shadow-lift: 0 18px 40px -12px rgba(11,61,46,.3);
+}
+:root[data-theme="bottle-green"] .app-header {
+  background: linear-gradient(120deg, var(--color-bg-elevated), #103b2d);
+  color: var(--color-primary-contrast);
+  border-bottom: none;
+  box-shadow: inset 0 -3px 0 0 var(--color-accent);
+  backdrop-filter: none;
+}
+:root[data-theme="bottle-green"] .app-header .app-title,
+:root[data-theme="bottle-green"] .app-header .header-username { color: var(--color-primary-contrast); }
+:root[data-theme="bottle-green"] .app-logo { background: linear-gradient(135deg, var(--color-accent), #a9821b); color: #1c2420; }
+:root[data-theme="bottle-green"] .app-nav { background: var(--color-bg-elevated); border-right: none; }
+:root[data-theme="bottle-green"] .nav-item { color: var(--color-primary-contrast); }
+:root[data-theme="bottle-green"] .nav-item:hover { background: rgba(255,255,255,.08); }
+:root[data-theme="bottle-green"] .nav-item--active { background: linear-gradient(135deg, var(--color-accent), #a9821b); color: #1c2420; box-shadow: var(--shadow-sm); }
+:root[data-theme="bottle-green"] .auth-hero-logo { background: linear-gradient(135deg, var(--color-primary), var(--color-primary-2)); color: var(--color-accent); }
+:root[data-theme="bottle-green"] .auth-wrap::before { background: var(--color-primary); }
+:root[data-theme="bottle-green"] .auth-wrap::after { background: var(--color-accent); }
+:root[data-theme="bottle-green"] .cal-day--today .cal-day-num { background: linear-gradient(135deg, var(--color-accent), #a9821b); color: #1c2420; }
+:root[data-theme="bottle-green"] .comment-avatar,
+:root[data-theme="bottle-green"] .player-avatar,
+:root[data-theme="bottle-green"] .team-crest { background: linear-gradient(135deg, var(--color-primary), var(--color-primary-2)); color: var(--color-accent); }
+
+@media (max-width: 860px) {
+  :root[data-theme="bottle-green"] .app-nav { border-top: 3px solid var(--color-accent); }
+}

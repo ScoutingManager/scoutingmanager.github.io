@@ -1,0 +1,33 @@
+/* Tema: Real Madrid - blanco, dorado, morado y azul */
+:root[data-theme="real-madrid"] {
+  --color-bg: #f6f6fb;
+  --color-bg-elevated: #ffffff;
+  --color-surface: #ffffff;
+  --color-surface-2: #f1eef8;
+  --color-border: #e3e0ee;
+  --color-text: #1b1a24;
+  --color-text-muted: #6d6580;
+  --color-primary: #223a8f;
+  --color-primary-2: #3f63c9;
+  --color-primary-contrast: #ffffff;
+  --color-accent: #c9a227;
+  --color-accent-2: #5b2f8a;
+  --color-danger: #d64545;
+  --color-success: #2e8b57;
+  --color-warn: #e07a28;
+  --shadow: 0 12px 32px -8px rgba(75,46,131,.18);
+  --shadow-sm: 0 4px 14px -4px rgba(75,46,131,.16);
+  --shadow-lift: 0 18px 40px -12px rgba(34,58,143,.24);
+}
+:root[data-theme="real-madrid"] .app-header {
+  background: color-mix(in srgb, #ffffff 90%, transparent);
+  border-bottom: 1px solid var(--color-border);
+  box-shadow: inset 0 -3px 0 0 var(--color-accent);
+}
+:root[data-theme="real-madrid"] .auth-wrap::before { background: var(--color-primary); }
+:root[data-theme="real-madrid"] .auth-wrap::after { background: var(--color-accent-2); }
+:root[data-theme="real-madrid"] .cal-day--today .cal-day-num {
+  background: linear-gradient(135deg, var(--color-accent), var(--color-accent-2));
+}
+:root[data-theme="real-madrid"] .app-nav { border-right: 1px solid var(--color-border); }
+:root[data-theme="real-madrid"] .nav-item--active { box-shadow: var(--shadow-sm), inset 3px 0 0 var(--color-accent); }

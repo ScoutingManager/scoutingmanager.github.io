@@ -1,0 +1,92 @@
+rules_version = '2';
+
+// JRVScoutingManager - reglas de seguridad de Firestore.
+// Copia y pega este archivo completo en Firebase Console > Firestore Database > Reglas > Publicar.
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    function userData() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+    function isApproved() {
+      return isSignedIn() && userData().status == 'approved';
+    }
+    function isAdmin() {
+      return isSignedIn() && userData().role == 'admin';
+    }
+    function hasPerm(perm) {
+      return isAdmin() || (isApproved() && ('permissions' in userData()) && userData().permissions[perm] == true);
+    }
+    function onlyChanged(fields) {
+      return request.resource.data.diff(resource.data).affectedKeys().hasOnly(fields);
+    }
+
+    // Perfiles de usuario: cualquiera con sesion iniciada puede leerlos (necesario para ver
+    // autores de comentarios, listas de scouts, etc). El auto-registro solo puede crear su
+    // propio perfil en estado "pending" con rol "scout"; el bootstrap del admin principal
+    // (jrverde) es la unica excepcion que puede crearse ya aprobado. Solo un admin puede
+    // aprobar, cambiar permisos o eliminar usuarios.
+    match /users/{uid} {
+      allow read: if isSignedIn();
+      allow create: if request.auth.uid == uid && (
+        (request.auth.token.email == 'jrverde@jrvscouting.app'
+          && request.resource.data.role == 'admin'
+          && request.resource.data.status == 'approved')
+        || (request.resource.data.role == 'scout' && request.resource.data.status == 'pending')
+      );
+      allow update: if isAdmin()
+        || (request.auth.uid == uid && onlyChanged(['prefs']));
+      allow delete: if isAdmin();
+    }
+
+    // Bandera global de "ya se ha sembrado la base de datos" - legible por cualquiera
+    // (incluso sin iniciar sesion, para poder decidir si hay que arrancar el bootstrap),
+    // pero solo el admin puede escribirla.
+    match /meta/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /categories/{id} {
+      allow read: if isApproved();
+      allow write: if hasPerm('canEditCalendar') || hasPerm('canEditScouting');
+    }
+
+    match /colors/{id} {
+      allow read: if isApproved();
+      allow write: if hasPerm('canEditCalendar') || hasPerm('canEditScouting');
+    }
+
+    // Los torneos los gestionan los editores de calendario, pero cualquier usuario
+    // aprobado puede anadir comentarios (solo se le permite tocar ese campo).
+    match /tournaments/{id} {
+      allow read: if isApproved();
+      allow create, delete: if hasPerm('canEditCalendar');
+      allow update: if hasPerm('canEditCalendar') || (isApproved() && onlyChanged(['comments']));
+    }
+
+    match /teams/{id} {
+      allow read: if isApproved();
+      allow write: if hasPerm('canEditScouting');
+    }
+
+    match /squads/{id} {
+      allow read: if isApproved();
+      allow write: if hasPerm('canEditScouting');
+    }
+
+    match /players/{id} {
+      allow read: if isApproved();
+      allow write: if hasPerm('canEditScouting');
+    }
+
+    match /reports/{id} {
+      allow read: if isApproved();
+      allow write: if hasPerm('canEditScouting');
+    }
+  }
+}

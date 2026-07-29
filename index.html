@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>JRVScoutingManager</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<meta name="description" content="Gestión de calendario de torneos y scouting de fútbol base.">
+<meta name="theme-color" content="#0b3d2e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="JRV Scouting">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="assets/icons/icon-180.png">
+<link rel="icon" href="assets/icons/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/theme-real-madrid.css">
+<link rel="stylesheet" href="css/theme-bottle-green.css">
+</head>
+<body>
+<div id="app">
+  <header id="app-header" class="app-header" hidden>
+    <div class="app-header-left">
+      <span class="app-logo">JRV</span>
+      <span class="app-title">JRVScoutingManager</span>
+    </div>
+    <div class="app-header-right">
+      <span id="header-username" class="header-username"></span>
+      <button id="btn-logout" class="btn btn--ghost btn--sm">Salir</button>
+    </div>
+  </header>
+
+  <div class="app-body">
+    <nav id="app-nav" class="app-nav" hidden>
+      <button class="nav-item nav-item--active" data-view="calendar"><span class="nav-icon">📅</span><span>Calendario</span></button>
+      <button class="nav-item" data-view="teams"><span class="nav-icon">🛡️</span><span>Equipos</span></button>
+      <button class="nav-item" data-view="scouting"><span class="nav-icon">🔎</span><span>Scouting</span></button>
+      <button class="nav-item" data-view="ranking"><span class="nav-icon">🏆</span><span>Ranking</span></button>
+      <button class="nav-item" data-view="informes"><span class="nav-icon">📄</span><span>Informes</span></button>
+      <button class="nav-item" data-view="admin" id="nav-admin" hidden><span class="nav-icon">👑</span><span>Admin</span></button>
+      <button class="nav-item" data-view="settings"><span class="nav-icon">⚙️</span><span>Ajustes</span></button>
+    </nav>
+
+    <main id="app-main" class="app-main">
+      <div id="view-auth" class="view"></div>
+      <div id="view-calendar" class="view" hidden></div>
+      <div id="view-teams" class="view" hidden></div>
+      <div id="view-scouting" class="view" hidden></div>
+      <div id="view-ranking" class="view" hidden></div>
+      <div id="view-informes" class="view" hidden></div>
+      <div id="view-admin" class="view" hidden></div>
+      <div id="view-settings" class="view" hidden></div>
+    </main>
+  </div>
+</div>
+
+<div id="modal-root" class="modal-root"></div>
+<div id="toast" class="toast"></div>
+
+<script type="module" src="js/firebase-init.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/db.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/players.js"></script>
+<script src="js/seed.js"></script>
+<script src="js/calendar.js"></script>
+<script src="js/teams.js"></script>
+<script src="js/scouting.js"></script>
+<script src="js/rankings.js"></script>
+<script src="js/reports.js"></script>
+<script src="js/admin.js"></script>
+<script src="js/settings.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
