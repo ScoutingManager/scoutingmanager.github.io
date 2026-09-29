@@ -195,7 +195,7 @@ const Seed = (() => {
         startDate: start,
         endDate: addDays(start, Math.max(0, days - 1)),
         colorId,
-        categoryId: categoryId || '',
+        categoryIds: categoryId ? [categoryId] : [],
         type,
         location: '',
         teamIds,

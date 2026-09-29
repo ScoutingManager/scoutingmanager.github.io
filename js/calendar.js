@@ -56,11 +56,20 @@ const Calendar = (() => {
     return weeks;
   }
 
+  // Un torneo puede tener varias categorias (categoryIds). Los torneos antiguos solo tenian categoryId.
+  function tournamentCategoryIds(t) {
+    if (Array.isArray(t.categoryIds)) return t.categoryIds;
+    return t.categoryId ? [t.categoryId] : [];
+  }
+
   function getVisibleTournaments() {
     let list = DB.tournaments.all();
-    if (filterCategory) list = list.filter(t => t.categoryId === filterCategory);
+    if (filterCategory) list = list.filter(t => tournamentCategoryIds(t).includes(filterCategory));
     if (!Auth.getCurrentUser()) return [];
-    return list.filter(t => !t.categoryId || Auth.canSeeCategory(t.categoryId));
+    return list.filter(t => {
+      const cats = tournamentCategoryIds(t);
+      return !cats.length || cats.some(id => Auth.canSeeCategory(id));
+    });
   }
 
   function colorHex(colorId) {
@@ -214,19 +223,34 @@ const Calendar = (() => {
     `).join('');
   }
 
-  function categoryOptions(selected) {
-    return `<option value="">Sin categoría</option>` + DB.categories.all().slice().sort((a, b) => a.order - b.order).map(c => `
-      <option value="${c.id}" ${c.id === selected ? 'selected' : ''}>${Utils.escapeHtml(c.name)}</option>
-    `).join('');
+  function categoryCheckboxes(selectedIds) {
+    const cats = DB.categories.all().slice().sort((a, b) => a.order - b.order);
+    if (!cats.length) return '<p class="text-muted-sm">No hay categorías creadas.</p>';
+    return `
+      <div class="team-picker">
+        ${cats.map(c => `
+          <label class="field field--checkbox team-picker-item">
+            <input type="checkbox" class="tour-cat" value="${c.id}" ${selectedIds.includes(c.id) ? 'checked' : ''}>
+            <span>${Utils.escapeHtml(c.name)}</span>
+          </label>
+        `).join('')}
+      </div>
+    `;
+  }
+
+  function findTeamByName(name) {
+    const key = name.trim().toLowerCase();
+    return DB.teams.all().find(team => (team.name || '').trim().toLowerCase() === key) || null;
   }
 
   function openTournamentForm(prefill, existing) {
     const isEdit = !!existing;
     const t = existing || {
       id: null, name: '', startDate: prefill.startDate, endDate: prefill.endDate,
-      colorId: DB.colors.all()[0]?.id, categoryId: '', type: 'torneo', location: '', description: '', comments: [], teamIds: []
+      colorId: DB.colors.all()[0]?.id, categoryIds: [], type: 'torneo', location: '', description: '', comments: [], teamIds: []
     };
-    const allTeams = DB.teams.all();
+    // Equipos participantes escritos a mano; se guardan como nombres mientras se edita el formulario
+    const teamNames = (t.teamIds || []).map(id => DB.teams.getById(id)?.name).filter(Boolean);
     const node = Utils.el(`
       <div class="modal">
         <div class="modal-header">
@@ -257,10 +281,6 @@ const Calendar = (() => {
               </select>
             </label>
             <label class="field">
-              <span>Categoría</span>
-              <select name="categoryId">${categoryOptions(t.categoryId)}</select>
-            </label>
-            <label class="field">
               <span>Color</span>
               <select name="colorId">${colorSwatchOptions(t.colorId)}</select>
             </label>
@@ -268,22 +288,25 @@ const Calendar = (() => {
               <span>Sede / lugar</span>
               <input type="text" name="location" value="${Utils.escapeHtml(t.location || '')}" placeholder="Ciudad, instalación...">
             </label>
+            <div class="field field--full">
+              <span>Categorías</span>
+              ${categoryCheckboxes(tournamentCategoryIds(t))}
+            </div>
             <label class="field field--full">
               <span>Descripción y notas</span>
               <textarea name="description" rows="4" placeholder="Horarios, formato de competición, observaciones de scouting...">${Utils.escapeHtml(t.description || '')}</textarea>
             </label>
             <div class="field field--full">
               <span>Equipos participantes</span>
-              ${allTeams.length ? `
-                <div class="team-picker">
-                  ${allTeams.map(team => `
-                    <label class="field field--checkbox team-picker-item">
-                      <input type="checkbox" class="tour-team" value="${team.id}" ${(t.teamIds || []).includes(team.id) ? 'checked' : ''}>
-                      <span>${Utils.escapeHtml(team.name)}</span>
-                    </label>
-                  `).join('')}
-                </div>
-              ` : `<p class="text-muted-sm">Todavía no has creado ningún equipo en el apartado "Equipos". Crea equipos allí para poder asociarlos a los torneos.</p>`}
+              <div class="team-entry">
+                <input type="text" id="tour-team-input" list="tour-team-suggestions" placeholder="Escribe el nombre del equipo y pulsa Añadir" autocomplete="off">
+                <button type="button" class="btn btn--ghost btn--sm" id="tour-team-add">Añadir</button>
+              </div>
+              <datalist id="tour-team-suggestions">
+                ${DB.teams.all().map(team => `<option value="${Utils.escapeHtml(team.name)}"></option>`).join('')}
+              </datalist>
+              <div class="team-chips" id="tour-team-chips"></div>
+              <p class="text-muted-sm">Los equipos nuevos se añadirán automáticamente al apartado "Equipos".</p>
             </div>
           </form>
         </div>
@@ -300,6 +323,28 @@ const Calendar = (() => {
     node.querySelector('#m-close').onclick = Utils.closeModal;
     node.querySelector('#tour-cancel').onclick = Utils.closeModal;
 
+    const teamInput = node.querySelector('#tour-team-input');
+    const chipsEl = node.querySelector('#tour-team-chips');
+    function renderTeamChips() {
+      chipsEl.innerHTML = teamNames.map((name, i) => `
+        <span class="team-chip team-chip--removable">${Utils.escapeHtml(name)}<button type="button" data-i="${i}" aria-label="Quitar ${Utils.escapeHtml(name)}">&times;</button></span>
+      `).join('');
+      chipsEl.querySelectorAll('button[data-i]').forEach(btn => btn.onclick = () => { teamNames.splice(Number(btn.dataset.i), 1); renderTeamChips(); });
+    }
+    function addTypedTeam() {
+      const name = teamInput.value.trim();
+      if (!name) return;
+      const existing = findTeamByName(name);
+      const finalName = existing ? existing.name : name;
+      if (!teamNames.some(n => n.toLowerCase() === finalName.toLowerCase())) teamNames.push(finalName);
+      teamInput.value = '';
+      renderTeamChips();
+      teamInput.focus();
+    }
+    node.querySelector('#tour-team-add').onclick = addTypedTeam;
+    teamInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); addTypedTeam(); } });
+    renderTeamChips();
+
     node.querySelector('#tour-save').onclick = () => {
       const form = node.querySelector('#tour-form');
       if (!form.reportValidity()) return;
@@ -307,23 +352,36 @@ const Calendar = (() => {
       const startDate = fd.get('startDate');
       const endDate = fd.get('endDate');
       if (endDate < startDate) { Utils.toast('La fecha fin no puede ser anterior a la de inicio.', 'error'); return; }
+      addTypedTeam(); // por si quedo un nombre escrito sin pulsar "Añadir"
+
+      // Los equipos que no existen se crean en el apartado "Equipos"
+      const newNames = teamNames.filter(name => !findTeamByName(name));
+      if (newNames.length && !Auth.can('canEditScouting')) {
+        Utils.toast('No tienes permiso para crear equipos nuevos: ' + newNames.join(', ') + '. Pide a un administrador que te dé permiso de scouting.', 'error');
+        return;
+      }
+      const teamIds = teamNames.map(name => {
+        const existing = findTeamByName(name);
+        if (existing) return existing.id;
+        return DB.teams.upsert({ id: DB.uid('team'), name, notes: '' }).id;
+      });
       const record = {
         id: t.id || DB.uid('tour'),
         name: fd.get('name').trim(),
         startDate, endDate,
         type: fd.get('type'),
-        categoryId: fd.get('categoryId'),
+        categoryIds: Array.from(node.querySelectorAll('.tour-cat:checked')).map(cb => cb.value),
         colorId: fd.get('colorId'),
         location: fd.get('location').trim(),
         description: fd.get('description').trim(),
-        teamIds: Array.from(node.querySelectorAll('.tour-team:checked')).map(cb => cb.value),
+        teamIds,
         comments: t.comments || [],
         createdBy: t.createdBy || Auth.getCurrentUser().username,
         createdAt: t.createdAt || new Date().toISOString()
       };
       DB.tournaments.upsert(record);
       Utils.closeModal();
-      Utils.toast(isEdit ? 'Torneo actualizado.' : 'Torneo creado.', 'success');
+      Utils.toast((isEdit ? 'Torneo actualizado.' : 'Torneo creado.') + (newNames.length ? ` ${newNames.length} equipo(s) nuevo(s) añadido(s) a Equipos.` : ''), 'success');
       render();
     };
 
@@ -346,7 +404,7 @@ const Calendar = (() => {
     const t = DB.tournaments.getById(id);
     if (!t) return;
     const canEdit = Auth.can('canEditCalendar');
-    const cat = DB.categories.getById(t.categoryId);
+    const cats = tournamentCategoryIds(t).map(id => DB.categories.getById(id)).filter(Boolean);
     const days = Utils.diffDaysISO(t.startDate, t.endDate) + 1;
     const user = Auth.getCurrentUser();
 
@@ -359,7 +417,7 @@ const Calendar = (() => {
         <div class="modal-body">
           <div class="detail-meta">
             <span class="badge" style="background:${colorHex(t.colorId)}">${t.type}</span>
-            ${cat ? `<span class="badge badge--outline">${Utils.escapeHtml(cat.name)}</span>` : ''}
+            ${cats.map(cat => `<span class="badge badge--outline">${Utils.escapeHtml(cat.name)}</span>`).join('')}
             <span class="text-muted">${days} día${days > 1 ? 's' : ''}</span>
           </div>
           <p><strong>Fechas:</strong> ${Utils.formatDisplayLong(t.startDate)}${t.startDate !== t.endDate ? ' &rarr; ' + Utils.formatDisplayLong(t.endDate) : ''}</p>

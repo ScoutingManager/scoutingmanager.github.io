@@ -1,5 +1,5 @@
 /* ScoutingManager - service worker basico (cache offline de shell estatico) */
-const CACHE_NAME = 'scouting-v6';
+const CACHE_NAME = 'scouting-v7';
 const ASSETS = [
   './', './index.html', './manifest.webmanifest',
   './css/base.css', './css/theme-real-madrid.css', './css/theme-bottle-green.css',
