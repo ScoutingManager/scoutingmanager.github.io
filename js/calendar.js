@@ -3,7 +3,8 @@
 const Calendar = (() => {
   let viewYear, viewMonth; // viewMonth: 0-11
   let filterCategory = '';
-  const MAX_LANES = 3;
+  // Alto de cada fila de torneo y hueco superior para el numero del dia (igual que en base.css)
+  const LANE_HEIGHT = 22, LANE_GAP = 3, DAY_HEADER = 26, MIN_WEEK_HEIGHT = 110;
 
   function init() {
     const today = new Date();
@@ -75,7 +76,6 @@ const Calendar = (() => {
     });
     const laneEndCol = []; // laneEndCol[lane] = last column index (0-6) occupied within week
     const placed = [];
-    const overflowByDay = new Array(7).fill(0);
 
     overlapping.forEach(ev => {
       const evStart = Utils.fromISODate(ev.startDate);
@@ -84,19 +84,14 @@ const Calendar = (() => {
       const endCol = Math.min(6, Math.round((evEnd - weekStart) / 86400000));
       if (endCol < 0 || startCol > 6) return;
 
-      let lane = -1;
-      for (let l = 0; l < MAX_LANES; l++) {
-        if (laneEndCol[l] === undefined || laneEndCol[l] < startCol) { lane = l; break; }
-      }
-      if (lane === -1) {
-        for (let d = startCol; d <= endCol; d++) overflowByDay[d]++;
-        return;
-      }
+      // Sin limite de filas: se muestran todos los torneos del dia
+      let lane = laneEndCol.findIndex(end => end < startCol);
+      if (lane === -1) lane = laneEndCol.length;
       laneEndCol[lane] = endCol;
       placed.push({ ev, lane, startCol, endCol, isStart: Utils.toISODate(evStart) === ev.startDate, continuesLeft: startCol === 0 && ev.startDate < Utils.toISODate(weekStart), continuesRight: endCol === 6 && ev.endDate > Utils.toISODate(weekEnd) });
     });
 
-    return { placed, overflowByDay };
+    return { placed, laneCount: laneEndCol.length };
   }
 
   function render() {
@@ -140,10 +135,12 @@ const Calendar = (() => {
     const grid = root.querySelector('#cal-grid');
     weeks.forEach(week => {
       const weekStart = week[0], weekEnd = week[6];
-      const { placed, overflowByDay } = assignLanesForWeek(weekStart, weekEnd, events);
+      const { placed, laneCount } = assignLanesForWeek(weekStart, weekEnd, events);
 
       const weekEl = Utils.el(`<div class="cal-week"></div>`);
       const bg = Utils.el(`<div class="cal-week-bg"></div>`);
+      // La semana crece para que quepan todos los torneos
+      bg.style.minHeight = Math.max(MIN_WEEK_HEIGHT, DAY_HEADER + laneCount * (LANE_HEIGHT + LANE_GAP) + LANE_GAP) + 'px';
       week.forEach(day => {
         const iso = Utils.toISODate(day);
         const inMonth = day.getMonth() === viewMonth;
@@ -169,13 +166,6 @@ const Calendar = (() => {
         `);
         bar.addEventListener('click', (e) => { e.stopPropagation(); openTournamentDetail(ev.id); });
         overlay.appendChild(bar);
-      });
-      overflowByDay.forEach((count, i) => {
-        if (count > 0) {
-          const chip = Utils.el(`<div class="cal-overflow" style="grid-column:${i + 1}; grid-row:${MAX_LANES + 1};">+${count} más</div>`);
-          chip.addEventListener('click', (e) => { e.stopPropagation(); openDayList(week[i]); });
-          overlay.appendChild(chip);
-        }
       });
       weekEl.appendChild(overlay);
       grid.appendChild(weekEl);
